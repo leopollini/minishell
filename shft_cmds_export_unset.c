@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 20:34:40 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 12:58:11 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:35:57 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	shft_cmd_unset_1(char *cmd, t_shell_stuff *sh, char ct)
 		temp[0] = ct;
 	return (line);
 }
+
 /* UNSET builtin */
 int	shft_cmd_unset(char *cmd, t_shell_stuff *sh)
 {

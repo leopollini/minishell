@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 10:29:55 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 15:35:54 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:35:41 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ int	exit_ok(char *s, t_shell_stuff *sh)
 	cs = 0;
 	while (shft_istab(*s))
 		s++;
-	if (!ft_strcmp_noend(s, "9223372036854775808") || !ft_strcmp_noend(s, "-9223372036854775809"))
+	if (!ft_strcmp_noend(s, "9223372036854775808") || \
+		!ft_strcmp_noend(s, "-9223372036854775809"))
 		cs = 1;
 	while (*s && !shft_istab(*s))
 	{

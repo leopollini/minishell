@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:17:28 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:35:20 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,6 @@ int	command_fork(char **args, t_shell_stuff *sh, int doset)
 		dup2(pipefd[1], STDOUT_FILENO);
 	close (pipefd[0]);
 	envdp = shft_dupenv(sh);
-fprintf(stderr, "executing %s\n", args[0]);
 	execve(args[0], args, envdp);
 	ft_putstr_fd("Error: dorectory not a proper executable\n", STDERR_FILENO);
 	sh->doexit = 1;
@@ -382,30 +381,22 @@ int	shft_redirections(char **cmd, t_shell_stuff *sh, int *doset)
 	return (0);
 }
 
-void	builtin_pipe_creat(int pipefd[2], int doset)
+void	builtin_temp_creat( void )
 {
-	pipe(pipefd);
-	if (doset)
-	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		dup2(pipefd[0], STDIN_FILENO);
-	}
+	int	filefd;
+
+	filefd = open(FILENAME, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	dup2(filefd, STDOUT_FILENO);
+	filefd = open(FILENAME, O_RDONLY);
+	dup2(filefd, STDIN_FILENO);
 }
 
 int	builtin_cmds(char *cd, t_shell_stuff *sh, int doset)
 {
 	int	res;
-	int	filefd;
 
-printf("called. %i\n", doset);
-	//builtin_pipe_creat(pipefd, doset);
 	if (doset)
-	{
-		filefd = open(FILENAME, O_CREAT | O_RDWR | O_TRUNC, 6777);
-		printf("###%i###", filefd);
-		dup2(filefd, STDOUT_FILENO);
-		dup2(filefd, STDIN_FILENO);
-	}
+		builtin_temp_creat();
 	res = 0x7fffffff;
 	if (!shft_strcmp_noend2(cd, "pwd"))
 		res = shft_cmd_pwd(cd, sh);
