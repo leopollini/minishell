@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:53:21 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 15:52:37 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@ void	shft_clean_cmd(char *ori)
 	ori[h] = '\0';
 }
 
-int	shft_redir_outp_1(int temp, int pipefd[2], int *doset, char *cmd)
+int	shft_redir_outp_1(int temp, int *doset, char *cmd)
 {
 	if (temp != -1)
 		dup2(temp, STDOUT_FILENO);
@@ -271,10 +271,6 @@ int	shft_redir_outp_1(int temp, int pipefd[2], int *doset, char *cmd)
 		ft_putstr_fd("Error: file not found\n", STDERR_FILENO);
 		return (1);
 	}
-	pipe(pipefd);
-	dup2(pipefd[0], STDIN_FILENO);
-	close(pipefd[1]);
-	temp = 0;
 	*doset = 0;
 	shft_clean_cmd(cmd);
 	return (0);
@@ -306,7 +302,6 @@ int	shft_redir_outp(char *cmd, t_shell_stuff *sh, int *doset)
 {
 	char	*pos;
 	char	*arg;
-	int		pipefd[2];
 	int		temp;
 	int		flags;
 
@@ -325,7 +320,7 @@ int	shft_redir_outp(char *cmd, t_shell_stuff *sh, int *doset)
 		flags++;
 	}
 	free(arg);
-	if (shft_redir_outp_1(temp, pipefd, doset, cmd))
+	if (shft_redir_outp_1(temp, doset, cmd))
 		return (1);
 	return (shft_redir_outp(cmd, sh, doset));
 }
