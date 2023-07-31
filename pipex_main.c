@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/29 11:50:18 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:17:28 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,10 +395,17 @@ void	builtin_pipe_creat(int pipefd[2], int doset)
 int	builtin_cmds(char *cd, t_shell_stuff *sh, int doset)
 {
 	int	res;
-	int	pipefd[2];
+	int	filefd;
 
 printf("called. %i\n", doset);
-	builtin_pipe_creat(pipefd, doset);
+	//builtin_pipe_creat(pipefd, doset);
+	if (doset)
+	{
+		filefd = open(FILENAME, O_CREAT | O_RDWR | O_TRUNC, 6777);
+		printf("###%i###", filefd);
+		dup2(filefd, STDOUT_FILENO);
+		dup2(filefd, STDIN_FILENO);
+	}
 	res = 0x7fffffff;
 	if (!shft_strcmp_noend2(cd, "pwd"))
 		res = shft_cmd_pwd(cd, sh);
@@ -416,8 +423,6 @@ printf("called. %i\n", doset);
 		res = shft_cmd_export(cd, sh);
 	if (res == 0x7fffffff)
 		ft_putstr_fd("Error: make better cmd check lol\n", STDERR_FILENO);
-	if (doset)
-		close(pipefd[1]);
 	return (res);
 }
 

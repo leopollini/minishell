@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 15:33:35 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:09:00 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,16 +39,17 @@
 # define BIG 999
 # define ENVN 999
 
-# define RED "\033[0;31m"
-# define GREEN "\033[0;32m"
-# define GREENBOLD "\033[1;32m"
-# define YELLOW "\033[0;33m"
-# define BLUE "\033[0;34m"
-# define BLUEBOLD "\033[1;34m"
-# define MAGENTA "\033[0;35m"
-# define CYAN "\033[0;36m"
-# define UNSET "\033[0m"
-# define BOLD "\033[1m"
+# define RED "\001\e[0;31m\002"
+# define GREEN "\001\e[0;32m\002"
+# define GREENBOLD "\001\e[1;32m\002"
+# define YELLOW "\001\e[0;33m\002"
+# define BLUE "\001\e[0;34m\002"
+# define BLUEBOLD "\001\e[1;34m\002"
+# define MAGENTA "\001\e[0;35m\002"
+# define CYAN "\001\e[0;36m\002"
+# define UNSET "\001\e[0m\002"
+# define BOLD "\001\e[1m\002"
+# define FILENAME ".file"
 
 # define BLTINS 0
 

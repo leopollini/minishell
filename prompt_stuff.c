@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt_stuff.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 15:33:19 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/23 21:50:41 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 13:57:18 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@ char	*build_put(t_shell_stuff *sh)
 {
 	char	*put;
 
-	put = ft_calloc(1, 8);
-	put = ft_strjoin_free(put, GREENBOLD);
+	put = ft_strdup(GREENBOLD);
 	put = ft_strjoin_free(put, sh->usr);
 	put = ft_strjoin_free(put, "@");
 	put = ft_strjoin_free(put, PROMPT);
