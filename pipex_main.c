@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:35:20 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:53:21 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -460,5 +460,6 @@ int	shft_pipexexec(char **cmds, int pipes, t_shell_stuff *sh)
 	if (i == pipes)
 		shft_fr_to(cmds[i], sh, 0);
 	dup2(sh->tempfds[0], STDIN_FILENO);
+	dup2(sh->tempfds[1], STDOUT_FILENO);
 	return (sh->lststatus);
 }
