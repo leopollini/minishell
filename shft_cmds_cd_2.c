@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 10:29:55 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 15:34:18 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/07/31 14:38:19 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,31 +14,22 @@
 
 static int	shft_pwd_better(char *nw, char **ori)
 {
-	char	*res;
-	int		i;
+	char	temp[999];
 
-	i = 0;
-	while (nw[++i])
+	if (access(nw, F_OK) == -1)
 	{
-		if (nw[i - 1] == '/' && nw[i] == '.')
-		{
-			if (nw[i + 1] == '/' || !nw[i + 1])
-			{
-				nw[i] = -1;
-				if (i > 2)
-					nw[i - 1] = -1;
-				i -= 3;
-			}
-			if (nw[i + 1] == '.' && (nw[i + 2] == '/' || !nw[i + 2]))
-				i = shft_rmdirone(nw, i + 1);
-		}
+		ft_putstr_fd("cd: No such file or directory\n", STDERR_FILENO);
 	}
-	while (nw[--i - 1] == '/' && i > 1)
-		nw[i - 1] = -1;
-	if (nw[ft_strlen(nw) - 1] == '/' && ft_strlen(nw) > 2)
-		nw[ft_strlen(nw) - 1] = '\0';
-	res = good_strdup(nw);
-	return (shft_pwd_better_1(res, nw, ori));
+	else
+	{
+		chdir(nw);
+		getcwd(temp, 999);
+		free(nw);
+		nw = *ori;
+		*ori = ft_strdup(temp);
+	}
+	free(nw);
+	return (1);
 }
 
 static char	cd_check(char *cmd)
@@ -76,9 +67,7 @@ static char	*shft_cmd_cd_1(char *cmd, char *lstpwd, \
 		printf("%s\n", newpwd);
 	}
 	else if (*cmd == '~')
-	{
 		newpwd = ft_strjoin(shft_getenv("HOME", sh->envp, sh), cmd + 1);
-	}
 	else if (*cmd == '/')
 		newpwd = ft_strdup(cmd);
 	else if (*cmd)
@@ -123,10 +112,8 @@ int	shft_cmd_cd(char *cmd, t_shell_stuff *sh)
 	if (BLTINS)
 		printf("CD BUILTIN\n");
 	if (cd_check(cmd))
-	{
-		ft_putstr_fd("cd: too many arguments\n", STDERR_FILENO);
-		return (1);
-	}
+		return (ft_putstr_fd("cd: too many arguments\n", \
+					STDERR_FILENO) * 0 + 1);
 	if (shft_cmd_cd_2(cmd, &lstpwd, sh, &newpwd))
 		return (1);
 	return (shft_pwd_better(newpwd, &sh->pwd));
