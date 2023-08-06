@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 20:34:40 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:35:57 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 16:18:56 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	shft_cmd_export(char *cmd, t_shell_stuff *sh)
 	if (BLTINS)
 		printf("EXPORT BUILTIN\n");
 	if (!*cmd)
-		return (shft_cmd_env("env", sh));
+		return (shft_execute_cmd(sh, "env | sort | awk \'$0=\"declare -x \"$0\'"));
 	t = export_ok(cmd);
 	if (t >= 0)
 		return (t);

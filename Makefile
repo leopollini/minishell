@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+         #
+#    By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 08:42:40 by lpollini          #+#    #+#              #
-#    Updated: 2023/07/30 22:28:06 by naal-jen         ###   ########.fr        #
+#    Updated: 2023/08/06 14:49:48 by lpollini         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ ft_isalnum \
 ft_itoa \
 ft_memmove \
 ft_putstr_fd \
+ft_split_2 \
 ft_split_1 \
 ft_split \
 ft_strchr \
@@ -37,7 +38,7 @@ get_next_line \
 main \
 pipex_main \
 prompt_stuff \
-shft_cmds_cd_1_echo_exit \
+shft_cmds_echo_exit \
 shft_cmds_cd_2 \
 shft_cmds_export_unset \
 shft_cmds_pwd \
@@ -70,6 +71,8 @@ $(NAME): $(OBJ) $(HEADER)
 $(OBJDIR)/%.o: %.c $(HEADER)
 	@mkdir -p $(dir $@)
 	@$(CC) $(FLAGS) $(OPTS) -c $< -o $@
+
+bonus: all
 
 clean:
 	@$(RM) $(OBJDIR) $(OBJ)

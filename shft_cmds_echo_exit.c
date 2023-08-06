@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shft_cmds_cd_1_echo_exit.c                         :+:      :+:    :+:   */
+/*   shft_cmds_echo_exit.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 10:29:55 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:35:41 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 16:24:49 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ int	shft_cmd_env(char *cmd, t_shell_stuff *sh)
 		ft_putstr_fd("env: too many arguments\n", STDERR_FILENO);
 		return (127);
 	}
-	i = 0;
-	while (i++ <= sh->envn)
+	i = -1;
+	while (++i <= sh->envn)
 		if (sh->envp[i][0] && sh->envp[i][0] != '#')
 			printf("%s\n", sh->envp[i]);
 	return (0);
@@ -45,7 +45,7 @@ int	exit_ok(char *s, t_shell_stuff *sh)
 		cs = 1;
 	while (*s && !shft_istab(*s))
 	{
-		if (!cs && (*s > '9' || *s < '0') && *s != '+' && *s != '-')
+		if (!cs && (*s > '9' || *s < '0') && *s != '+' && *s != '-' && *s)
 			cs = 1;
 		s++;
 	}
@@ -67,11 +67,31 @@ int	shft_cmd_exit(char *cmd, t_shell_stuff *sh)
 	if (BLTINS)
 		printf("EXIT BUILTIN\n");
 	cmd += 4;
+	printf("exit\n");
 	if (!exit_ok(cmd, sh))
 		sh->exit_code = ft_atoi(cmd);
 	sh->doexit = 1;
 	sh->lststatus = 0;
 	return (0);
+}
+
+void	shft_echo_writer(char *cmd)
+{
+	char	test;
+
+	test = 0;
+	while (*cmd)
+	{
+		if (*cmd == '\'' && test != 2)
+			test ^= 1;
+		else if (*cmd == '\"' && test != 1)
+			test ^= 2;
+		else
+			write(1, cmd, 1);
+		while (shft_istab(*cmd) && shft_istab(*(cmd + 1)) && !test)
+			cmd++;
+		cmd++;
+	}
 }
 
 int	shft_cmd_echo(char *cmd, t_shell_stuff *sh)
@@ -89,15 +109,7 @@ int	shft_cmd_echo(char *cmd, t_shell_stuff *sh)
 		cmd += 2 + (flag++ & 0);
 	while (shft_istab(*cmd))
 		cmd++;
-	i = -1;
-	while (cmd[++i])
-	{
-		if (cmd[i] == '\n' && flag)
-			write(1, "%%", 1);
-		write(1, cmd + i, 1);
-		while (shft_istab(cmd[i]) && shft_istab(cmd[i + 1]))
-			i++;
-	}
+	shft_echo_writer(cmd);
 	if (!flag)
 		write(1, "\n", 1);
 	return (0);

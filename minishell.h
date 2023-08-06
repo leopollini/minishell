@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:34:49 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 14:28:35 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ int		shft_pwd_better_1(char *res, char *nw, char **ori);
 void	shft_init_two_vars(int *a, int va, int *b, int vb);
 int		count_words(const char *str, char c);
 char	*word_dup(char const *str, int start, int finish);
+char	**shft_split2(char *s, char c, char ig1, char ig2);
 
 int		shft_cmd_pwd(char *cmd, t_shell_stuff *sh);
 int		shft_cmd_env(char *cmd, t_shell_stuff *sh);

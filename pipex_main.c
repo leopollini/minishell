@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 15:52:37 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 14:59:24 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ int	command(char *cmd, t_shell_stuff *sh, int doset)
 	int			res;
 	int			i;
 
-	args = ft_split1(cmd, ' ', '\\');
+	args = shft_split2(cmd, ' ', '\'', '\"');
 	if (ft_strchr(args[0], '/') && access(args[0], X_OK) == 0)
 		res = command_fork(args, sh, doset);
 	else
@@ -338,7 +338,7 @@ static void	word_clean(char *str, int len)
 	str[j] = '\0';
 }
 
-void	shft_last_parse(char **s)
+void	shft_last_parse_1(char **s)
 {
 	int		test;
 	char	*ori;
@@ -351,6 +351,40 @@ void	shft_last_parse(char **s)
 			*ori = '>';
 		if (*ori == -2)
 			*ori = '<';
+		ori++;
+	}
+	word_clean(*s, ft_strlen(*s));
+}
+
+int	shft_redirections(char **cmd, t_shell_stuff *sh, int *doset)
+{
+	if (shft_redir_inpt(cmd, sh))
+		return (1);
+	if (shft_redir_outp(*cmd, sh, doset))
+		return (1);
+	shft_last_parse_1(cmd);
+	return (0);
+}
+
+void	builtin_temp_creat( void )
+{
+	int	filefd;
+
+	filefd = open(FILENAME, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	dup2(filefd, STDOUT_FILENO);
+	filefd = open(FILENAME, O_RDONLY);
+	dup2(filefd, STDIN_FILENO);
+}
+
+void	shft_last_parse_2(char **s)
+{
+	int		test;
+	char	*ori;
+
+	ori = *s;
+	test = 0;
+	while (*ori)
+	{
 		if (*ori == '\'' && test != 2)
 		{
 			test ^= 1;
@@ -366,47 +400,29 @@ void	shft_last_parse(char **s)
 	word_clean(*s, ft_strlen(*s));
 }
 
-int	shft_redirections(char **cmd, t_shell_stuff *sh, int *doset)
-{
-	if (shft_redir_inpt(cmd, sh))
-		return (1);
-	if (shft_redir_outp(*cmd, sh, doset))
-		return (1);
-	shft_last_parse(cmd);
-	return (0);
-}
-
-void	builtin_temp_creat( void )
-{
-	int	filefd;
-
-	filefd = open(FILENAME, O_CREAT | O_WRONLY | O_TRUNC, 0777);
-	dup2(filefd, STDOUT_FILENO);
-	filefd = open(FILENAME, O_RDONLY);
-	dup2(filefd, STDIN_FILENO);
-}
-
 int	builtin_cmds(char *cd, t_shell_stuff *sh, int doset)
 {
 	int	res;
 
+
 	if (doset)
 		builtin_temp_creat();
 	res = 0x7fffffff;
+	if (!shft_strcmp_noend2(cd, "echo"))
+		res = shft_cmd_echo(cd, sh);
+	if (!shft_strcmp_noend2(cd, "export"))
+		res = shft_cmd_export(cd, sh);
+	shft_last_parse_2(&cd);
 	if (!shft_strcmp_noend2(cd, "pwd"))
 		res = shft_cmd_pwd(cd, sh);
 	if (!shft_strcmp_noend2(cd, "env"))
 		res = shft_cmd_env(cd, sh);
-	if (!shft_strcmp_noend2(cd, "echo"))
-		res = shft_cmd_echo(cd, sh);
 	if (!shft_strcmp_noend2(cd, "exit"))
 		res = shft_cmd_exit(cd, sh);
 	if (!shft_strcmp_noend2(cd, "cd"))
 		res = shft_cmd_cd(cd, sh);
 	if (!shft_strcmp_noend2(cd, "unset"))
 		res = shft_cmd_unset(cd, sh);
-	if (!shft_strcmp_noend2(cd, "export"))
-		res = shft_cmd_export(cd, sh);
 	if (res == 0x7fffffff)
 		ft_putstr_fd("Error: make better cmd check lol\n", STDERR_FILENO);
 	return (res);

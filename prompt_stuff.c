@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt_stuff.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 15:33:19 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 13:57:18 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/08/06 16:22:42 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*shft_prompt(t_shell_stuff *sh, int dofree)
 	tmp[0] = ft_strjoin_free_1(tmp[1], better_pwd(sh->pwd, sh->usr));
 	free(tmp[1]);
 	tmp[0] = ft_strjoin_free(tmp[0], UNSET);
-	tmp[0] = ft_strjoin_free(tmp[0], "$");
+	tmp[0] = ft_strjoin_free(tmp[0], "$ ");
 	tmp[1] = readline(tmp[0]);
 	free(tmp[0]);
 	return (tmp[1]);

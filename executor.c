@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 20:30:22 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 13:31:43 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 14:49:06 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ int	shft_istab1(char *str)
 	return (0);
 }
 
-	//implement $(cmd) why not??
 void	manage_dollar(char **str, t_shell_stuff *sh)
 {
 	char	ct;

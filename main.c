@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:32:51 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/30 22:39:59 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/08/06 16:17:59 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	sigint_handle(int a)
 
 void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 {
+	char	*temp;
+
 	sh->tempfds[1] = dup(STDOUT_FILENO);
 	sh->tempfds[0] = dup(STDIN_FILENO);
 	signal(SIGINT, &sigint_handle);
@@ -38,6 +40,9 @@ void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 	if (!sh->pwd || access(sh->pwd, F_OK) == -1)
 		sh->pwd = ft_strdup("/");
 	update_env_free(sh->envp, sh->pwd, sh);
+	temp = ft_strjoin("export SHELL=", args[0]);
+	//shft_cmd_export(temp, sh);
+	free(temp);
 	sh->doexit = -1;
 	sh->exit_code = 0;
 }
@@ -71,7 +76,7 @@ int	main(int argn, char *args[], char *envp[])
 		}
 		else
 		{
-			write(1, "\n", 1);
+			write(1, "exit\n", 6);
 			break ;
 		}
 		update_env_free(shell.envp, shell.pwd, &shell);

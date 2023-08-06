@@ -6,19 +6,22 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 10:29:55 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/31 14:38:19 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/06 14:57:33 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	shft_pwd_better(char *nw, char **ori)
+static int	shft_pwd_better(char *nw, char **ori, t_shell_stuff *sh)
 {
 	char	temp[999];
 
 	if (access(nw, F_OK) == -1)
 	{
 		ft_putstr_fd("cd: No such file or directory\n", STDERR_FILENO);
+		sh->lststatus = 1;
+		free(nw);
+		return (1);
 	}
 	else
 	{
@@ -27,9 +30,10 @@ static int	shft_pwd_better(char *nw, char **ori)
 		free(nw);
 		nw = *ori;
 		*ori = ft_strdup(temp);
+		sh->lststatus = 0;
+		free(nw);
+		return (0);
 	}
-	free(nw);
-	return (1);
 }
 
 static char	cd_check(char *cmd)
@@ -116,5 +120,5 @@ int	shft_cmd_cd(char *cmd, t_shell_stuff *sh)
 					STDERR_FILENO) * 0 + 1);
 	if (shft_cmd_cd_2(cmd, &lstpwd, sh, &newpwd))
 		return (1);
-	return (shft_pwd_better(newpwd, &sh->pwd));
+	return (shft_pwd_better(newpwd, &sh->pwd, sh));
 }
