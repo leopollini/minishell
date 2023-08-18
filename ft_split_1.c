@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 09:45:15 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/06 14:29:36 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/18 13:40:37 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ int	shft_split1_test(char *s, char ig1, char ig2, int test)
 		test ^= 1;
 	if (s[0] == ig2 && test != 1)
 		test ^= 2;
-	if (test && s[0] == '>')
-		s[0] = -1;
-	if (test && s[0] == '<')
-		s[0] = -2;
+	// if (test && s[0] == '>')
+	// 	s[0] = -1;
+	// if (test && s[0] == '<')
+	// 	s[0] = -2;
 	return (test);
 }
 

@@ -6,25 +6,25 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:32:51 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/06 16:17:59 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/18 15:16:42 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sigint_handle(int a)
+char	g_isrunning;
+
+void	sigint_handle(int a)	//please handle sigintyy
 {
-	a = 0;
 	write(1, "\n", 1);
-	rl_replace_line("", a);
+	rl_replace_line("", 0);
 	rl_on_new_line();
+	if (!g_isrunning)
 	rl_redisplay();
 }
 
 void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 {
-	char	*temp;
-
 	sh->tempfds[1] = dup(STDOUT_FILENO);
 	sh->tempfds[0] = dup(STDIN_FILENO);
 	signal(SIGINT, &sigint_handle);
@@ -40,11 +40,9 @@ void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 	if (!sh->pwd || access(sh->pwd, F_OK) == -1)
 		sh->pwd = ft_strdup("/");
 	update_env_free(sh->envp, sh->pwd, sh);
-	temp = ft_strjoin("export SHELL=", args[0]);
-	//shft_cmd_export(temp, sh);
-	free(temp);
 	sh->doexit = -1;
 	sh->exit_code = 0;
+	g_isrunning = 0;
 }
 
 int	shft_exit(int e, t_shell_stuff *sh)
@@ -66,6 +64,7 @@ int	main(int argn, char *args[], char *envp[])
 	while (shell.doexit == -1)
 	{
 		cmd_buff = shft_prompt(&shell, 0);
+		g_isrunning = 1;
 		if (cmd_buff && *cmd_buff)
 			add_history(cmd_buff);
 		if (cmd_buff)
@@ -76,10 +75,11 @@ int	main(int argn, char *args[], char *envp[])
 		}
 		else
 		{
-			write(1, "exit\n", 6);
+			write(1, "exit\n", 5);
 			break ;
 		}
 		update_env_free(shell.envp, shell.pwd, &shell);
+		g_isrunning = 0;
 	}
 	shft_exit(-1, &shell);
 }

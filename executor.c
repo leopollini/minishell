@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 20:30:22 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/06 14:49:06 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/18 23:47:20 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,8 @@ int	shft_execute_cmd(t_shell_stuff *sh, char *str)
 		return (127);
 	while (piped[pipes])
 		pipes++;
-	shft_pipexexec(piped, pipes - 1, sh);
+	if (piped[0])
+		shft_pipexexec(piped, pipes - 1, sh);
 	while (pipes--)
 		free(piped[pipes]);
 	free(piped);

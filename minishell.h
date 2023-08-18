@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/06 14:28:35 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/08/18 10:51:22 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 
 # define BLTINS 0
 
-# define PROMPT "minishell_by_lpollini"
+# define PROMPT "minishell_by_lpollini&nizz"
 # define PROMPTSIZEMAX 199
 
 typedef struct s_vector2_int
