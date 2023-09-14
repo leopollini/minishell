@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 20:34:40 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/06 16:18:56 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:19:03 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,19 @@ int	export_ok(char *s)
 	return (-1);
 }
 
-//* UNSET builtin*/
+int	export_lol(t_shell_stuff *sh)
+{
+	int	tempfd;
+
+	tempfd = dup(STDOUT_FILENO);
+	shft_execute_cmd(sh, "env | sort | awk \'$0=\"declare -x \"$0\' > .tempfile");
+	dup2(tempfd, STDOUT_FILENO);
+	shft_execute_cmd(sh, "cat .tempfile");
+	shft_execute_cmd(sh, "rm .tempfile");
+	return (0);
+}
+
+//* EXPORT builtin*/
 int	shft_cmd_export(char *cmd, t_shell_stuff *sh)
 {
 	char	*temp[2];
@@ -100,7 +112,7 @@ int	shft_cmd_export(char *cmd, t_shell_stuff *sh)
 	if (BLTINS)
 		printf("EXPORT BUILTIN\n");
 	if (!*cmd)
-		return (shft_execute_cmd(sh, "env | sort | awk \'$0=\"declare -x \"$0\'"));
+		return (export_lol(sh));
 	t = export_ok(cmd);
 	if (t >= 0)
 		return (t);

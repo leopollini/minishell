@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/27 10:29:55 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/18 10:42:47 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:09:59 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,10 +120,14 @@ void	shft_echo_writer(char *cmd)
 	test = 0;
 	while (*cmd)
 	{
+		while (shft_istab(*cmd) && shft_istab(*(cmd + 1)) && !test)
+			cmd++;
 		if (*cmd == '\'' && test != 2)
 			test ^= 1;
 		else if (*cmd == '\"' && test != 1)
 			test ^= 2;
+		else if (shft_istab(*(cmd)) && !*(cmd + 1))
+			return ;
 		else
 			write(1, cmd, 1);
 		while (shft_istab(*cmd) && shft_istab(*(cmd + 1)) && !test)

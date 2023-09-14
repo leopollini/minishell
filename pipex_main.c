@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/19 00:22:56 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/09/14 16:03:38 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,7 +249,7 @@ int	shft_redir_inpt(char *cmd, t_shell_stuff *sh)
 		return (shft_putter("minishell: \'", filename, "\': Permission denied\n", STDERR_FILENO) + 1);
 	if (tempfd == -1)
 	{
-		shft_putter("minishell: \'", filename, "\'No such file or directory\n", STDERR_FILENO);
+		shft_putter("minishell: \'", filename, "\': No such file or directory\n", STDERR_FILENO);
 		word_clean(cmd, ft_strlen(cmd));
 		return (1);
 	}
@@ -290,9 +290,9 @@ int	shft_redir_outpt(char *cmd, t_shell_stuff *sh, int *doset)
 		append = 1;
 	filename = shft_get_word(p + 1 + append);
 	if (append)
-		tempfd = open(filename, 02101, 0777);
+		tempfd = open(filename, 02101, 0666);
 	else
-		tempfd = open(filename, 01101, 0777);
+		tempfd = open(filename, 01101, 0666);
 	if (append)
 		*p = -1;
 	if (manage_redir_o(filename, tempfd, p, append))
@@ -320,9 +320,7 @@ void	shft_last_parse_1(char **s)
 
 int	shft_redirections(char **cmd, t_shell_stuff *sh, int *doset)
 {
-	if (shft_redir_outpt(*cmd, sh, doset))
-		return (1);
-	if (shft_redir_inpt(*cmd, sh))
+	if (shft_redir_inpt(*cmd, sh) || shft_redir_outpt(*cmd, sh, doset))
 		return (1);
 	shft_last_parse_1(cmd);
 	return (0);
@@ -332,7 +330,7 @@ void	builtin_temp_creat( void )
 {
 	int	filefd;
 
-	filefd = open(FILENAME, O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	filefd = open(FILENAME, O_CREAT | O_WRONLY | O_TRUNC, 0666);
 	dup2(filefd, STDOUT_FILENO);
 	filefd = open(FILENAME, O_RDONLY);
 	dup2(filefd, STDIN_FILENO);
@@ -417,12 +415,17 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 	int	pp[2];
 
 	if (sh->doexit != -1 || shft_redirections(&cmd, sh, &doset))
+	{
+		pipe(pp);
+		close(pp[1]);
+		dup2(pp[0], STDIN_FILENO);
 		return (1, sh->lststatus = 1);
-	if (!*cmd)
+	}
+	/*if (!*cmd)
 	{
 		ft_putstr_fd("Error: invalid redirection syntax\n", STDERR_FILENO);
 		return (127);
-	}
+	}*/
 	if (shft_is_builtin(cmd) == 0)
 		sh->lststatus = builtin_cmds(cmd, sh, doset);
 	else
