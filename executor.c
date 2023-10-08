@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 20:30:22 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 18:51:10 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 19:02:02 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,6 +235,8 @@ char	*shft_recursor(t_shell_stuff *sh, char *cmd)
 	else
 		return (t + 1);
 	shft_layer_rec(sh, t + 1);
+	if (!*cmd)
+		return (NULL);
 	cmd++;
 	while (shft_istab(*cmd))
 		cmd++;
@@ -247,7 +249,6 @@ void	shft_layer_rec(t_shell_stuff *sh, char *cmd)
 {
 	char	*cmdf;
 	char	*t;
-	char	dummy;
 
 	cmd = shft_recursor(sh, cmd);
 	if (!cmd || !*cmd)
@@ -263,7 +264,8 @@ void	shft_layer_rec(t_shell_stuff *sh, char *cmd)
 	shft_execute_cmd(sh, cmdf);
 	if ((*cmd == '|' && !sh->lststatus) || (*cmd == '&' && sh->lststatus))
 		return ;
-	shft_layer_rec(sh, cmd + 1);
+	if (*cmd)
+		shft_layer_rec(sh, cmd + 1);
 }
 
 int	shft_chain_ops(t_shell_stuff *sh, char *cmd)
