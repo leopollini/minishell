@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:32:51 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 16:20:02 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 18:50:59 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	shft_exit(int e, t_shell_stuff *sh)
 
 t_loco	*loco(void)
 {
-	static t_loco	loco = {NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL};
+	static t_loco	loco = {NULL, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL};
 
 	return (&loco);
 }
@@ -91,14 +91,13 @@ int	main(int argn, char *args[], char *envp[])
 	{
 		cmd_buff = shft_prompt(&shell, 0);
 		g_signal = 1;
-		loco()->exit = 0;
 		//shell.lststatus = 0;
 		if (cmd_buff && *cmd_buff)
 			add_history(cmd_buff);
 		if (cmd_buff)
 		{
 			if (*cmd_buff)
-				shft_execute_cmd(&shell, cmd_buff);
+				shft_chain_ops(&shell, cmd_buff);
 			free(cmd_buff);
 		}
 		else

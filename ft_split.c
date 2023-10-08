@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 09:45:15 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 15:40:02 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 18:33:06 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,37 +40,45 @@ int	count_words(const char *str, char c)
 	return (i);
 }
 
+void	quotes_passer(char *str, int *index, int *count)
+{
+	if (str[*index] == '\'')
+	{
+		(*count)++;
+		while (str[++(*index)] != '\'')
+			(*count)++;
+	}
+	if (str[*index] == '"')
+	{
+		(*count)++;
+		while (str[++(*index)] != '"')
+			(*count)++;
+	}
+}
+
 int	count_words_bonus(char *str)
 {
 	int	i;
+	int	j;
 	int	loco;
 
 	i = 0;
+	j = 0;
 	loco = 0;
-	while (*str)
+	while (str[j])
 	{
-		if (*str == '\'')
-		{
-			i++;
-			while (*++str != '\'')
-				i++;
-		}
-		if (*str == '"')
-		{
-			i++;
-			while (*++str != '"')
-				i++;
-		}
-		if ((*str == '&' && *(str + 1) == '&') || (*str == '|' && *(str + 1) == '|'))
+		quotes_passer(str, &j, &i);
+		if ((str[j] == '&' && str[j + 1] == '&')
+			|| (str[j] == '|' && str[j + 1] == '|'))
 		{
 			if (loco == 1)
 				break;
 			loco = 1;
-			str++;
+			j++;
 			i++;
 		}
 		i++;
-		str++;
+		j++;
 	}
 	return (i);
 }
@@ -132,6 +140,7 @@ char	**ft_split1(char const *s, char c, char ig)
 	return (split);
 }
 
+
 char	**ft_split(char const *s, char c)
 {
 	int		i;
@@ -171,24 +180,7 @@ char	*ft_split_bonus(char *s, int *index)
 	if (!s || !split)
 		return (0);
 	shft_init_two_vars(&i, 0, &j, 0);
-	// printf("me i: %d\n", i);
 	split = word_dup_bonus(s, 0, *index);
-	// tmp = word_dup_bonus(s, index, ft_strlen(s));
-	// free(s);
-	// s = tmp;
-	// printf("the word created is: %s\n", split);
-	// printf("me rest of s: %s\n", s);
-	// while (i <= ft_strlen(s))
-	// {
-	// 	if (s[i] != c && index < 0)
-	// 		index = i;
-	// 	else if ((s[i] == c || i == ft_strlen(s)) && index >= 0)
-	// 	{
-	// 		split[j++] = word_dup_bonus(s, index, i);
-	// 		index = -1;
-	// 	}
-	// 	i++;
-	// }
 	split[*index + 1] = '\0';
 	return (split);
 }
@@ -209,13 +201,6 @@ char	**ft_split_operators(char *s)
 	if (!s || !split)
 		return (0);
 	shft_init_two_vars(&i, 0, &j, 0);
-	// printf("me i: %d\n", i);
-	// split = word_dup_bonus(s, 0, index);
-	// tmp = word_dup_bonus(s, index, ft_strlen(s));
-	// free(s);
-	// s = tmp;
-	// printf("the word created is: %s\n", split);
-	// printf("me rest of s: %s\n", s);
 	while (++counter <= 2)
 	{
 		x = i;

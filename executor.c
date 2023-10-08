@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 20:30:22 by lpollini          #+#    #+#             */
-/*   Updated: 2023/09/27 15:29:38 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 18:51:10 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,4 +173,102 @@ int	shft_execute_cmd(t_shell_stuff *sh, char *str)
 	if (command != str)
 		free(str);
 	return (0);
+}
+
+
+
+
+int	shft_ch_checkok(char *cmd)
+{
+	return (0);
+}
+
+char	*shft_strchr_chain(char *s, char a)
+{
+	char	*t;
+
+	t = s;
+	s = shft_strchr(s, a, '\'', '\"');
+	if  (s && s[0] && s[1] == a)
+		return (s);
+	if (s)
+		return shft_strchr_chain(s + 1, '|');
+	while (*t)
+		t++;
+	return (t);
+}
+
+char	*shft_strchr_s(char *s)
+{
+	char	*t;
+	int		i;
+
+	i = 0;
+	while (*s)
+	{
+		if (*s == ')')
+			i--;
+		if (*s == '(')
+			i++;
+		if (!i)
+			break ;
+		s++;
+	}
+	if (!*s)
+		return (NULL);
+	return (s);
+}
+
+char	*shft_recursor(t_shell_stuff *sh, char *cmd)
+{
+	char	*t;
+
+	t = cmd;
+	while (shft_istab(*cmd))
+		cmd++;
+	if (*cmd != '(')
+		return (t);
+	t = cmd;
+	cmd = shft_strchr_s(cmd);
+	if (cmd)
+		*cmd = '\0';
+	else
+		return (t + 1);
+	shft_layer_rec(sh, t + 1);
+	cmd++;
+	while (shft_istab(*cmd))
+		cmd++;
+	if (!((*cmd == '|' && !sh->lststatus) || (*cmd == '&' && sh->lststatus)))
+		shft_layer_rec(sh, cmd + 2);
+	return (NULL);
+}
+
+void	shft_layer_rec(t_shell_stuff *sh, char *cmd)
+{
+	char	*cmdf;
+	char	*t;
+	char	dummy;
+
+	cmd = shft_recursor(sh, cmd);
+	if (!cmd || !*cmd)
+		return ;
+	cmdf = cmd;
+	cmd = shft_strchr_chain(cmdf, '&');
+	t = shft_strchr_chain(cmdf, '|');
+	if ((unsigned long )t < (unsigned long )cmd)
+		cmd = t;
+	if (!*cmd)
+		return ((void )shft_execute_cmd(sh, cmdf));
+	*(cmd++) = '\0';
+	shft_execute_cmd(sh, cmdf);
+	if ((*cmd == '|' && !sh->lststatus) || (*cmd == '&' && sh->lststatus))
+		return ;
+	shft_layer_rec(sh, cmd + 1);
+}
+
+int	shft_chain_ops(t_shell_stuff *sh, char *cmd)
+{
+	if (shft_ch_checkok(cmd))
+		return (sh->lststatus);
+	shft_layer_rec(sh, cmd);
 }

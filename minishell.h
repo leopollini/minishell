@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 16:19:46 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 18:50:45 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,9 @@ typedef struct s_command
 	char	**pipelinesplit;
 }	t_command;
 
+
+int		shft_chain_ops(t_shell_stuff *sh, char *cmd);
+void	shft_layer_rec(t_shell_stuff *sh, char *cmd);
 //* ---------------------------------- nizz ---------------------------------- */
 t_loco	*loco(void);
 void	init_bonus_struct(void);

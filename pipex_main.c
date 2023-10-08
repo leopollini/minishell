@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 16:18:57 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 18:51:00 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -412,11 +412,12 @@ void	non_executable_handler(char *cmd, t_shell_stuff *sh)
 
 //* ---------------------------------- nizz ---------------------------------- */
 
-int check_for_bonus(char *cmd)
+int	check_for_bonus(char *cmd)
 {
 	int		i;
 	int		flag;
 	char	fs;
+
 	i = -1;
 	flag = 0;
 	fs = 0;
@@ -521,12 +522,10 @@ int	execution_proccess_and_bonus(int *pp, t_shell_stuff *sh, int doset)
 			//*	maybe here you check in general for the lststatus and on that handle the execution of the command
 			// if (counter == 1 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126))
 			// 	break ;
-			if (counter == 2 && sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126 && loco()->exit != 0)
+			if (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126)
 				break ;
 			else if (counter == 1 && loco()->parentheses == 1)
 				break ;
-			else if (loco()->exit == 0)
-				loco()->exit = 1;
 			if (sh->doexit != -1 || shft_redirections(&cmds[counter], sh, &doset))
 			{
 				pipe(pp);
@@ -605,10 +604,8 @@ int	execution_proccess_or_bonus(int *pp, t_shell_stuff *sh, int doset)
 				break ;
 			else if (counter == 1 && loco()->parentheses == 1)
 				break ;
-			else if (counter == 0 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126) && loco()->exit != 0)
+			else if (counter == 0 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126))
 				continue ;
-			else if (loco()->exit == 0)
-				loco()->exit = 1;
 			if (sh->doexit != -1 || shft_redirections(&cmds[counter], sh, &doset))
 			{
 				pipe(pp);
@@ -662,16 +659,6 @@ void	check_for_operator(char *cmd)
 	i = -1;
 	while (cmd[++i])
 	{
-		if (cmd[i] == '\'')
-		{
-			while (cmd[++i] == '\'')
-				;
-		}
-		if (cmd[i] == '"')
-		{
-			while (cmd[++i] == '"')
-				;
-		}
 		if (cmd[i] == '&' && cmd[i + 1] == '&')
 			loco()->and = 1;
 		else if (cmd[i] == '|' && cmd[i + 1] == '|')
@@ -892,7 +879,7 @@ char	*check_for_parentheses(char *cmd, t_shell_stuff *sh, int *pp, int doset, in
 //! -------------------------------------------------------------------------- */
 
 //* ---------------------------------- nizz ---------------------------------- */
-int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
+/*int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 {
 	char	*tmp;
 	int		index;
@@ -912,7 +899,6 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 		{
 			//*	split the first two commands
 			loco()->piece = ft_split_bonus(tmp, &index);
-			// printf("loco()->piece: %s\n", loco()->piece);
 			//*	check for the type
 			check_for_operator(loco()->piece);
 			// check_for_wildcard(loco()->piece, doset, &pp[0]);
@@ -949,7 +935,7 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 	else
 	{
 		//*	here you will need to clean the command from ( and )
-		if (ft_strchr(tmp, ')') && !ft_strchr(tmp, '('))
+		if (ft_strchr(tmp, ')'))
 			tmp = clean_cmd(tmp);
 		if (loco()->g_or == 1 && sh->lststatus == 0)
 			return (sh->lststatus);
@@ -975,8 +961,34 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 	}
 	loco()->n = 0;
 	return (sh->lststatus);
-}
+}*/
 //! ----------------------------------- end ---------------------------------- */
+
+
+int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
+{
+	int	pp[2];
+
+	if (sh->doexit != -1 || shft_redirections(&cmd, sh, &doset))
+	{
+		pipe(pp);
+		close(pp[1]);
+		dup2(pp[0], STDIN_FILENO);
+		return (1, sh->lststatus = 1);
+	}
+	if (shft_is_builtin(cmd) == 0)
+		sh->lststatus = builtin_cmds(cmd, sh, doset);
+	else
+		sh->lststatus = command(cmd, sh, doset);
+	if (sh->lststatus == -1)
+	{
+		non_executable_handler(cmd, sh);
+		pipe(pp);
+		close(pp[1]);
+		dup2(pp[0], STDIN_FILENO);
+	}
+	return (sh->lststatus);
+}
 
 int	shft_pipexexec(char **cmds, int pipes, t_shell_stuff *sh)
 {
