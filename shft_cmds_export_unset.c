@@ -6,7 +6,7 @@
 /*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 20:34:40 by lpollini          #+#    #+#             */
-/*   Updated: 2023/09/14 16:19:03 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/08 11:56:56 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,10 @@ int	shft_cmd_export(char *cmd, t_shell_stuff *sh)
 		return (export_lol(sh));
 	t = export_ok(cmd);
 	if (t >= 0)
+	{
+		sh->lststatus = 1;
 		return (t);
+	}
 	temp[0] = ft_strjoin("unset ", cmd);
 	temp[1] = ft_strchr(temp[0], '=');
 	ft_memmove(temp[1], "", 1);

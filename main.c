@@ -3,24 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:32:51 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/06 15:16:33 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 12:23:58 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	g_isrunning;
+int	g_signal;
 
 void	sigint_handle(int a)	//please handle sigintyy
 {
 	write(1, "\n", 1);
 	rl_replace_line("", 0);
 	rl_on_new_line();
-	if (!g_isrunning)
+	if (!g_signal)
 		rl_redisplay();
+	g_signal = a;
 }
 
 void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
@@ -42,7 +43,7 @@ void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 	update_env_free(sh->envp, sh->pwd, sh);
 	sh->doexit = -1;
 	sh->exit_code = 0;
-	g_isrunning = 0;
+	g_signal = 0;
 	init_bonus_struct();
 }
 
@@ -60,21 +61,21 @@ int	shft_exit(int e, t_shell_stuff *sh)
 
 t_loco	*loco(void)
 {
-	static t_loco	loco;
+	static t_loco	loco = {NULL, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL};
 
 	return (&loco);
 }
 
-void	init_bonus_struct(void)
+void	init_bonus_struct(void)	// non necessario: valori iniziali assegnati durante la dichiarazione della variabile 'static'
 {
-	loco()->and = 0;
+	/*loco()->and = 0;
 	loco()->or = 0;
 	loco()->g_and = 0;
 	loco()->g_or = 0;
 	loco()->parentheses = 0;
 	loco()->n = 0;
 	loco()->out_to_pipe = 0; //! might not be needed
-	loco()->piece = NULL;
+	loco()->piece = NULL;*/
 }
 
 //! -------------------------------------------------------------------------- */
@@ -89,8 +90,8 @@ int	main(int argn, char *args[], char *envp[])
 	while (shell.doexit == -1)
 	{
 		cmd_buff = shft_prompt(&shell, 0);
-		g_isrunning = 1;
-		shell.lststatus = 0;
+		g_signal = 1;
+		//shell.lststatus = 0;
 		if (cmd_buff && *cmd_buff)
 			add_history(cmd_buff);
 		if (cmd_buff)
@@ -105,7 +106,7 @@ int	main(int argn, char *args[], char *envp[])
 			break ;
 		}
 		update_env_free(shell.envp, shell.pwd, &shell);
-		g_isrunning = 0;
+		g_signal = 0;
 	}
 	shft_exit(-1, &shell);
 }

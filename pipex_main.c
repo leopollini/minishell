@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
+/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/07 11:31:27 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 12:20:34 by lpollini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ int	command(char *cmd, t_shell_stuff *sh, int doset)
 	int			i;
 
 	args = shft_split2(cmd, ' ', '\'', '\"');
+	printf("called. %i : %i\n", access(args[0], F_OK | R_OK), access(args[0], F_OK));
 	if (access(args[0], F_OK | R_OK) == -1 && access(args[0], F_OK) == 0)
 		return (126 + shft_putter("minishell: \'", args[0], "\': Permission denied\n", STDERR_FILENO) * 0);
 	if (ft_strchr(args[0], '/') && access(args[0], X_OK) == 0)
