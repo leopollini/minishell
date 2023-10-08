@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/18 10:51:22 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/08 11:06:48 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,23 @@
 # define PROMPT "minishell_by_lpollini&nizz"
 # define PROMPTSIZEMAX 199
 
+typedef struct s_loco
+{
+	//* ------------------------- For operators && and || ------------------------ */
+	char			*piece;
+	int				and;
+	int				or;
+	int				g_and;
+	int				g_or;
+	int				parentheses;
+	int				n;
+	int				out_to_pipe;
+	//* ------------------------------ For wildcard ------------------------------ */
+	int				flag_no_process;
+	DIR				*dir;
+	struct dirent	*entry;
+}	t_loco;
+
 typedef struct s_vector2_int
 {
 	int	a;
@@ -98,6 +115,28 @@ typedef struct s_command
 	char	**spacesplit;
 	char	**pipelinesplit;
 }	t_command;
+
+//* ---------------------------------- nizz ---------------------------------- */
+t_loco	*loco(void);
+void	init_bonus_struct(void);
+char	*ft_split_bonus(char *s, int *index);
+char	**ft_split_operators(char *s);
+char	*word_dup_bonus(char const *str, int start, int finish);
+int		count_words_bonus(char *str);
+void	check_for_operator(char *cmd);
+char	*ft_strdup_len(const char *src, int len);
+char	*check_for_parentheses(char *cmd, t_shell_stuff *sh, int *pp, int doset, int *index);
+size_t	ft_strlen_arr(void	**loco);
+/* ---------------------------- wildcard/parce.c ---------------------------- */
+int		verify_match(char **split_wild, const char *str, int *i, int *j);
+int		match(const char *str, char **split_wild, int first_char, int last_char);
+char	*wildcard_process(char *str, int *first, int *last, char ***split_wild);
+char	*check_for_wildcard_normal(char *str);
+/* ---------------------------- wildcard/utils.c ---------------------------- */
+void	main_command_join(char **new_str, char **split);
+void	initialize_three_to_zero(int *n, int *i, int *z);
+void	pr_dir(char **new_str, char **split_wild, int first_char, int last_char);
+//! -------------------------------------------------------------------------- */
 
 int		ft_strcmp_noend(const char *s1, const char *s2);
 int		shft_exit(int e, t_shell_stuff *sh);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/12 18:45:30 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/27 13:38:51 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/07 18:30:26 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,6 @@ char	**ft_split(char const *s, char c);
 void	ft_exit(int arg);
 void	init(int argn, char *args[], t_stuff *stuff);
 int		partloop(int *i, t_stuff *stuff, char *temp, char *args[]);
+void	ft_free_tab(char **tb);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 13:32:51 by lpollini          #+#    #+#             */
-/*   Updated: 2023/08/18 15:16:42 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/06 15:16:33 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	sigint_handle(int a)	//please handle sigintyy
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	if (!g_isrunning)
-	rl_redisplay();
+		rl_redisplay();
 }
 
 void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
@@ -43,6 +43,7 @@ void	shft_init(t_shell_stuff *sh, char *args[], char *envp[], int argn)
 	sh->doexit = -1;
 	sh->exit_code = 0;
 	g_isrunning = 0;
+	init_bonus_struct();
 }
 
 int	shft_exit(int e, t_shell_stuff *sh)
@@ -55,16 +56,41 @@ int	shft_exit(int e, t_shell_stuff *sh)
 	exit(sh->exit_code);
 }
 
+//* -------------- a way to have a struct by calling a function -------------- */
+
+t_loco	*loco(void)
+{
+	static t_loco	loco;
+
+	return (&loco);
+}
+
+void	init_bonus_struct(void)
+{
+	loco()->and = 0;
+	loco()->or = 0;
+	loco()->g_and = 0;
+	loco()->g_or = 0;
+	loco()->parentheses = 0;
+	loco()->n = 0;
+	loco()->out_to_pipe = 0; //! might not be needed
+	loco()->piece = NULL;
+}
+
+//! -------------------------------------------------------------------------- */
+
 int	main(int argn, char *args[], char *envp[])
 {
 	t_shell_stuff	shell;
 	char			*cmd_buff;
 
 	shft_init(&shell, args, envp, argn);
+	// printf("here are the experiment and: %d\n now or: %d\n now para: %d\n", loco()->and, loco()->or, loco()->parentheses);
 	while (shell.doexit == -1)
 	{
 		cmd_buff = shft_prompt(&shell, 0);
 		g_isrunning = 1;
+		shell.lststatus = 0;
 		if (cmd_buff && *cmd_buff)
 			add_history(cmd_buff);
 		if (cmd_buff)

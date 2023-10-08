@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+         #
+#    By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/17 08:42:40 by lpollini          #+#    #+#              #
-#    Updated: 2023/08/18 10:24:36 by lpollini         ###   ########.fr        #
+#    Updated: 2023/10/08 11:05:33 by naal-jen         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,9 @@ shft_cmds_echo_exit \
 shft_cmds_cd_2 \
 shft_cmds_export_unset \
 shft_cmds_pwd \
-str_stuff
+str_stuff \
+wildcard/parse \
+wildcard/utils
 
 SRC			= $(FILES:=.c)
 OBJ			= $(addprefix $(OBJDIR)/, $(FILES:=.o))

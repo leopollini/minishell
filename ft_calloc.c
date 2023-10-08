@@ -3,23 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 09:45:15 by lpollini          #+#    #+#             */
-/*   Updated: 2023/07/17 20:18:19 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/07 18:27:35 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	*ft_calloc(size_t many, size_t size)
+void	*ft_memset(void *s, int c, size_t n)
 {
-	void	*tslot;
+	unsigned char	*p;
+	char			car;
 
-	tslot = malloc(many * size);
-	if (!tslot)
+	car = (char)c;
+	p = (unsigned char *)s;
+	while (n > 0)
+	{
+		*p = car;
+		p++;
+		n--;
+	}
+	return (s);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	char	*p;
+
+	if (size && nmemb > 2147483647 / size)
 		return (NULL);
-	while (size--)
-		((char *)tslot)[size] = 0;
-	return (tslot);
+	p = malloc(nmemb * size);
+	if (!p)
+		return (NULL);
+	ft_memset(p, 0, nmemb * size);
+	return (p);
 }
