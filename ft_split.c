@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/03 09:45:15 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/07 11:30:57 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 15:40:02 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,19 @@ int	count_words_bonus(char *str)
 	loco = 0;
 	while (*str)
 	{
-		if (*str == '&' || *str == '|')
+		if (*str == '\'')
+		{
+			i++;
+			while (*++str != '\'')
+				i++;
+		}
+		if (*str == '"')
+		{
+			i++;
+			while (*++str != '"')
+				i++;
+		}
+		if ((*str == '&' && *(str + 1) == '&') || (*str == '|' && *(str + 1) == '|'))
 		{
 			if (loco == 1)
 				break;
@@ -209,14 +221,48 @@ char	**ft_split_operators(char *s)
 		x = i;
 		while (s[x] == ' ')
 			x++;
-		while (s[x] && (s[x] != '&' && s[x] != '|'))
+		while (s[x])
+		{
+			if (s[x] == '\'')
+			{
+				while (s[++x] != '\'')
+					;
+			}
+			if (s[x] == '"')
+			{
+				while (s[++x] != '"')
+					;
+			}
+			if (s[x] == '&' && s[x + 1] == '&')
+				break ;
+			else if (s[x] == '|' && s[x + 1] == '|')
+				break ;
 			x++;
+		}
 		split[j] = (char *)ft_calloc(x + 1, sizeof(char));
 		x = 0;
 		while (s[i] == ' ')
 			i++;
-		while (s[i] && (s[i] != '&' && s[i] != '|'))
+		while (s[i])
+		{
+			if (s[i] == '\'')
+			{
+				split[j][y++] = s[i++];
+				while (s[i] != '\'')
+					split[j][y++] = s[i++];
+			}
+			if (s[i] == '"')
+			{
+				split[j][y++] = s[i++];
+				while (s[++i] != '"')
+					split[j][y++] = s[i++];
+			}
+			if (s[i] == '&' && s[i + 1] == '&')
+				break ;
+			else if (s[i] == '|' && s[i + 1] == '|')
+				break ;
 			split[j][y++] = s[i++];
+		}
 		while (s[i] == '&' || s[i] == '|')
 			i++;
 		j++;

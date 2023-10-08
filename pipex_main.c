@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lpollini <lpollini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/24 12:46:25 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 12:20:34 by lpollini         ###   ########.fr       */
+/*   Updated: 2023/10/08 16:18:57 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,6 @@ int	command(char *cmd, t_shell_stuff *sh, int doset)
 	int			i;
 
 	args = shft_split2(cmd, ' ', '\'', '\"');
-	printf("called. %i : %i\n", access(args[0], F_OK | R_OK), access(args[0], F_OK));
 	if (access(args[0], F_OK | R_OK) == -1 && access(args[0], F_OK) == 0)
 		return (126 + shft_putter("minishell: \'", args[0], "\': Permission denied\n", STDERR_FILENO) * 0);
 	if (ft_strchr(args[0], '/') && access(args[0], X_OK) == 0)
@@ -413,15 +412,22 @@ void	non_executable_handler(char *cmd, t_shell_stuff *sh)
 
 //* ---------------------------------- nizz ---------------------------------- */
 
-int	check_for_bonus(char *cmd)
+int check_for_bonus(char *cmd)
 {
-	int	i;
-	int	flag;
-
+	int		i;
+	int		flag;
+	char	fs;
 	i = -1;
 	flag = 0;
+	fs = 0;
 	while (cmd[++i])
 	{
+		if (cmd[i] == '\'' || fs != 1)
+			fs ^= 2;
+		if (cmd[i] == '\"' || fs != 2)
+			fs ^= 1;
+		if (fs)
+			continue ;
 		if (cmd[i] == '&' && cmd[i + 1] == '&')
 		{
 			flag = 1;
@@ -515,10 +521,12 @@ int	execution_proccess_and_bonus(int *pp, t_shell_stuff *sh, int doset)
 			//*	maybe here you check in general for the lststatus and on that handle the execution of the command
 			// if (counter == 1 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126))
 			// 	break ;
-			if (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126)
+			if (counter == 2 && sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126 && loco()->exit != 0)
 				break ;
 			else if (counter == 1 && loco()->parentheses == 1)
 				break ;
+			else if (loco()->exit == 0)
+				loco()->exit = 1;
 			if (sh->doexit != -1 || shft_redirections(&cmds[counter], sh, &doset))
 			{
 				pipe(pp);
@@ -597,8 +605,10 @@ int	execution_proccess_or_bonus(int *pp, t_shell_stuff *sh, int doset)
 				break ;
 			else if (counter == 1 && loco()->parentheses == 1)
 				break ;
-			else if (counter == 0 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126))
+			else if (counter == 0 && (sh->lststatus == 1 || sh->lststatus == 127 || sh->lststatus == 126) && loco()->exit != 0)
 				continue ;
+			else if (loco()->exit == 0)
+				loco()->exit = 1;
 			if (sh->doexit != -1 || shft_redirections(&cmds[counter], sh, &doset))
 			{
 				pipe(pp);
@@ -652,6 +662,16 @@ void	check_for_operator(char *cmd)
 	i = -1;
 	while (cmd[++i])
 	{
+		if (cmd[i] == '\'')
+		{
+			while (cmd[++i] == '\'')
+				;
+		}
+		if (cmd[i] == '"')
+		{
+			while (cmd[++i] == '"')
+				;
+		}
 		if (cmd[i] == '&' && cmd[i + 1] == '&')
 			loco()->and = 1;
 		else if (cmd[i] == '|' && cmd[i + 1] == '|')
@@ -892,6 +912,7 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 		{
 			//*	split the first two commands
 			loco()->piece = ft_split_bonus(tmp, &index);
+			// printf("loco()->piece: %s\n", loco()->piece);
 			//*	check for the type
 			check_for_operator(loco()->piece);
 			// check_for_wildcard(loco()->piece, doset, &pp[0]);
@@ -928,7 +949,7 @@ int	shft_fr_to(char *cmd, t_shell_stuff *sh, int doset)
 	else
 	{
 		//*	here you will need to clean the command from ( and )
-		if (ft_strchr(tmp, ')'))
+		if (ft_strchr(tmp, ')') && !ft_strchr(tmp, '('))
 			tmp = clean_cmd(tmp);
 		if (loco()->g_or == 1 && sh->lststatus == 0)
 			return (sh->lststatus);

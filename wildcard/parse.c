@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/03 17:06:11 by naal-jen          #+#    #+#             */
-/*   Updated: 2023/10/08 11:01:38 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 14:31:49 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,10 @@ char	*wildcard_process(char *str, int *first, int *last, char ***split_wild)
 
 char	*check_for_wildcard_normal(char *str)
 {
-	char			**split_wild;
-	char			*new_str;
-	int				first_char;
-	int				last_char;
+	char	**split_wild;
+	char	*new_str;
+	int		first_char;
+	int		last_char;
 
 	initialize_three_to_zero(&first_char, &last_char, &loco()->flag_no_process);
 	new_str = wildcard_process(str, &first_char, &last_char, &split_wild);

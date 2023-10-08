@@ -6,7 +6,7 @@
 /*   By: naal-jen <naal-jen@student.42firenze.it    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/15 18:06:24 by lpollini          #+#    #+#             */
-/*   Updated: 2023/10/08 11:06:48 by naal-jen         ###   ########.fr       */
+/*   Updated: 2023/10/08 16:19:46 by naal-jen         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_loco
 	//* ------------------------- For operators && and || ------------------------ */
 	char			*piece;
 	int				and;
+	int				exit;
 	int				or;
 	int				g_and;
 	int				g_or;
